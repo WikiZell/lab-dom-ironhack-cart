@@ -11,8 +11,7 @@ function addNewItem(elTrigger) {
     qty: 1,
     totalPrice: null
   };
-  createNewItem(itemData);
-
+  createNewItem(itemData);  
   //Reset Form
   let createItemButton = document.getElementById("new-item-create");
   let btn = document.getElementById("new-item-create");
@@ -27,38 +26,42 @@ function addNewItem(elTrigger) {
 
 function updatePrices() {
   //Start iteration from item elements
+   var totalCartPrice = [];
+  
   document.querySelectorAll("[item]").forEach(element => {
     //for each element "item" do:
     var id, productName, unitCost, qty, totalPrice;
 
     id = element.getAttribute("item");
     productName = element.querySelector(".product-name").innerHTML;
-    unitCost = parseFloat(
-      element.querySelector(".cost-unit").innerHTML
-    ).toFixed("2");
+    unitCost = parseFloat(element.querySelector(".cost-unit").innerHTML).toFixed("2");
     qty = parseInt(element.querySelector("#qty-input").value);
     if(isNaN(qty)){
       qty = parseInt(0);
     }
     totalPrice = parseFloat(unitCost * qty).toFixed("2");
-    document.querySelector(
-      ".id" + id + " .total-ammount"
-    ).innerHTML = totalPrice;
+    totalCartPrice.push(totalPrice)
+    document.querySelector(".id" + id + " .total-ammount").innerHTML = totalPrice;
   });
+
+
+  //add to total cart ammount
+  document.querySelector("#total-cart-ammount").innerHTML = parseFloat( totalCartPrice.reduce(function(a, b) { return parseFloat(a) + parseFloat(b); }, 0) ).toFixed("2");
 }
 
 function createNewItem(itemData) {
   //create default item
   itemHTML = itemTemplate(itemData); //generate item from template
   document.querySelector("#item-container").appendChild(itemHTML);
+  updatePrices(); //Update prices
 }
 
 function deleteItem(elementToRemove) {
   elementToRemove.path[2].remove();
-  console.log(elementToRemove);
+  updatePrices();
 }
 
-window.onload = function() {
+document.addEventListener("DOMContentLoaded", function(event) {
   var calculatePriceButton = document.getElementById("calc-prices-button");
   var createItemButton = document.getElementById("new-item-create");
 
@@ -91,6 +94,9 @@ window.onload = function() {
       elem.addEventListener("keyup", function() {
         let productName = document.querySelector(".new-prod-name").value;
         let unitCost = document.querySelector(".new-prod-price").value;
+        if(isNaN(unitCost)){
+          unitCost = 0;
+        }
 
         //Validate data
         if (!productName || !unitCost || isNaN(unitCost)) {
@@ -111,9 +117,14 @@ window.onload = function() {
     });
   })();
 
-  document.addEventListener("keyup", updatePrices); //autoUpdate Prices on quantity change
+  document.addEventListener("keyup",updatePrices);
 
-}; // end window
+});
+
+
+
+
+
 
 //My Functions
 var itemTemplate = function(itemData) {
