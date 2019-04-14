@@ -69,12 +69,27 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
   //Delegate eventListener to dinamically added button
   var itemContainer = document.getElementById("item-container");
+  var itemQuantity = document.getElementById("qty-input");
 
   itemContainer.addEventListener("click", function(e) {
     if (e.target && e.target.matches(".btn-delete")) {
       deleteItem(e);
     }
   });
+
+  itemContainer.addEventListener("keyup", function(e) {
+    if (e.target && e.target.matches('input[type="number"]')) {
+      updatePrices();
+    }
+  });
+
+  itemContainer.addEventListener("change", function(e) {
+    if (e.target && e.target.matches('input[type="number"]')) {
+      updatePrices();
+    }
+  });
+
+
 
   //create first item
   var firstItem = {
@@ -87,7 +102,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
   createNewItem(firstItem);
 
-  //Validate item fields and Enable add item button
+  //Validate item fields and Enable add item button [New Item]
   (function() {
     let inputAddItem = document.querySelectorAll(".add-prod-box");
     inputAddItem.forEach(function(elem) {
@@ -116,8 +131,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
       });
     });
   })();
-
-  document.addEventListener("keyup",updatePrices);
 
 });
 
