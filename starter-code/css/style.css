@@ -39,3 +39,58 @@ input {
 .quantity {
   margin: 0 5px;
 }
+
+.container {
+  margin: 10px;
+  padding: 25px;
+  border: solid 1px;
+  border-radius: 15px;
+}
+
+.item {
+  display: flex;
+  width: 100%;
+  margin-bottom: 10px;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: row;
+  border: dotted 1px green;
+  padding: 5px;
+  border-radius: 10px;
+}
+
+.calc-btn {
+  width: 200px;;
+}
+
+.btn-container {
+  display: flex;
+  align-content: center;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.add-prod-box {
+  margin-left: 12px;
+  margin-bottom: 10px;
+}
+
+#itemTemplate {
+  display: none;
+}
+
+.cart{
+  cursor: pointer;
+  font-size: 20px;
+  color: #4cae4c;
+}
+
+.cart-disabled{
+  font-size: 20px;
+  color: lightgrey;
+  cursor: not-allowed;
+}
+
+.product-name-box{
+  width: 200px;
+}

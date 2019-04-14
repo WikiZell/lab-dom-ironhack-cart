@@ -1,52 +1,158 @@
-function deleteItem(e){
+function addNewItem(elTrigger) {
+  let productName = document.querySelector(".new-prod-name").value;
+  let unitCost = document.querySelector(".new-prod-price").value;
 
+  let id = document.querySelectorAll(".item").length;
+  //send Data to createNewItem function
+  let itemData = {
+    id: id,
+    productName: productName,
+    unitCost: unitCost,
+    qty: 1,
+    totalPrice: null
+  };
+  createNewItem(itemData);
+
+  //Reset Form
+  let createItemButton = document.getElementById("new-item-create");
+  let btn = document.getElementById("new-item-create");
+
+  createItemButton.onclick = false;
+  createItemButton.removeEventListener("click", createItemButton);
+  btn.classList.remove("cart");
+  btn.classList.add("cart-disabled");
+  document.querySelector(".new-prod-price").value = "";
+  document.querySelector(".new-prod-name").value = "";
 }
 
-function getPriceByProduct(itemNode){
+function updatePrices() {
+  //Start iteration from item elements
+  document.querySelectorAll("[item]").forEach(element => {
+    //for each element "item" do:
+    var id, productName, unitCost, qty, totalPrice;
 
+    id = element.getAttribute("item");
+    productName = element.querySelector(".product-name").innerHTML;
+    unitCost = parseFloat(
+      element.querySelector(".cost-unit").innerHTML
+    ).toFixed("2");
+    qty = parseInt(element.querySelector("#qty-input").value);
+    if(isNaN(qty)){
+      qty = parseInt(0);
+    }
+    totalPrice = parseFloat(unitCost * qty).toFixed("2");
+    document.querySelector(
+      ".id" + id + " .total-ammount"
+    ).innerHTML = totalPrice;
+  });
 }
 
-function updatePriceByProduct(productPrice, index){
-
+function createNewItem(itemData) {
+  //create default item
+  itemHTML = itemTemplate(itemData); //generate item from template
+  document.querySelector("#item-container").appendChild(itemHTML);
 }
 
-function getTotalPrice() {
-
+function deleteItem(elementToRemove) {
+  elementToRemove.path[2].remove();
+  console.log(elementToRemove);
 }
 
-function createQuantityInput(){
+window.onload = function() {
+  var calculatePriceButton = document.getElementById("calc-prices-button");
+  var createItemButton = document.getElementById("new-item-create");
 
-}
+  calculatePriceButton.onclick = updatePrices; //update prices of all items
 
-function createDeleteButton(){
+  //Delegate eventListener to dinamically added button
+  var itemContainer = document.getElementById("item-container");
 
-}
+  itemContainer.addEventListener("click", function(e) {
+    if (e.target && e.target.matches(".btn-delete")) {
+      deleteItem(e);
+    }
+  });
 
-function createQuantityNode(){
+  //create first item
+  var firstItem = {
+    id: 1,
+    productName: "IronHack Gold Water",
+    unitCost: 2.5,
+    qty: 3,
+    totalPrice: "null"
+  };
 
-}
+  createNewItem(firstItem);
 
-function createItemNode(dataType, itemData){
+  //Validate item fields and Enable add item button
+  (function() {
+    let inputAddItem = document.querySelectorAll(".add-prod-box");
+    inputAddItem.forEach(function(elem) {
+      elem.addEventListener("keyup", function() {
+        let productName = document.querySelector(".new-prod-name").value;
+        let unitCost = document.querySelector(".new-prod-price").value;
 
-}
+        //Validate data
+        if (!productName || !unitCost || isNaN(unitCost)) {
+          createItemButton.onclick = false;
+          createItemButton.removeEventListener("click", createItemButton);
+          document.getElementById("new-item-create").classList.remove("cart");
+          document
+            .getElementById("new-item-create")
+            .classList.add("cart-disabled");
+        } else {
+          document
+            .getElementById("new-item-create")
+            .classList.remove("cart-disabled");
+          document.getElementById("new-item-create").classList.add("cart");
+          createItemButton.onclick = addNewItem;          
+        }
+      });
+    });
+  })();
 
-function createNewItemRow(itemName, itemUnitPrice){
+  document.addEventListener("keyup", updatePrices); //autoUpdate Prices on quantity change
 
-}
+}; // end window
 
-function createNewItem(){
+//My Functions
+var itemTemplate = function(itemData) {
+  var htmlItem = document.querySelector("#itemTemplate .item").cloneNode(true);
+  Object.keys(itemData).forEach(function(key) {
+    switch (key) {
+      case "id":
+        //create item attribute
+        var att = document.createAttribute("item");
+        att.value = itemData.id;
+        htmlItem.setAttributeNode(att); //attach item attribute to itemTemplate
+        htmlItem.classList.add("id" + itemData.id); //add class id
+        break;
+      case "productName":
+        htmlItem.querySelector(".product-name").innerHTML =
+          itemData.productName; //Set product name
+        break;
+      case "unitCost":
+        htmlItem.querySelector(".cost-unit").innerHTML = parseFloat(
+          itemData.unitCost
+        ).toFixed("2"); //Set cost per unit
 
-}
+        break;
+      case "qty":
+        htmlItem.querySelector(".product-quantity input").value = itemData.qty; //Set qty
 
-window.onload = function(){
-  var calculatePriceButton = document.getElementById('calc-prices-button');
-  var createItemButton = document.getElementById('new-item-create');
-  var deleteButtons = document.getElementsByClassName('btn-delete');
+        break;
 
-  calculatePriceButton.onclick = getTotalPrice;
-  createItemButton.onclick = createNewItem;
+      case "totalPrice":
+        htmlItem.querySelector(".total-ammount").innerHTML = parseFloat(
+          itemData.unitCost * itemData.qty
+        ).toFixed("2"); //Set qty
 
-  for(var i = 0; i<deleteButtons.length ; i++){
-    deleteButtons[i].onclick = deleteItem;
-  }
+        break;
+
+      default:
+        break;
+    }
+  });
+
+  return htmlItem;
 };
