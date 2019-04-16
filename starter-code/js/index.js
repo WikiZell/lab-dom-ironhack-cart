@@ -11,6 +11,7 @@ function addNewItem(elTrigger) {
     qty: 1,
     totalPrice: null
   };
+
   createNewItem(itemData);  
   //Reset Form
   let createItemButton = document.getElementById("new-item-create");
@@ -89,13 +90,11 @@ document.addEventListener("DOMContentLoaded", function(event) {
     }
   });
 
-
-
   //create first item
   var firstItem = {
     id: 1,
     productName: "IronHack Gold Water",
-    unitCost: 2.5,
+    unitCost: 7,
     qty: 3,
     totalPrice: "null"
   };
@@ -109,9 +108,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
       elem.addEventListener("keyup", function() {
         let productName = document.querySelector(".new-prod-name").value;
         let unitCost = document.querySelector(".new-prod-price").value;
-        if(isNaN(unitCost)){
-          unitCost = 0;
-        }
+        
 
         //Validate data
         if (!productName || !unitCost || isNaN(unitCost)) {
@@ -135,10 +132,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
 });
 
 
-
-
-
-
 //My Functions
 var itemTemplate = function(itemData) {
   var htmlItem = document.querySelector("#itemTemplate .item").cloneNode(true);
@@ -159,20 +152,15 @@ var itemTemplate = function(itemData) {
         htmlItem.querySelector(".cost-unit").innerHTML = parseFloat(
           itemData.unitCost
         ).toFixed("2"); //Set cost per unit
-
         break;
       case "qty":
         htmlItem.querySelector(".product-quantity input").value = itemData.qty; //Set qty
-
         break;
-
       case "totalPrice":
         htmlItem.querySelector(".total-ammount").innerHTML = parseFloat(
           itemData.unitCost * itemData.qty
         ).toFixed("2"); //Set qty
-
         break;
-
       default:
         break;
     }
